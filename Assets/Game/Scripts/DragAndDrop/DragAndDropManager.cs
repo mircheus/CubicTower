@@ -43,22 +43,32 @@ namespace Game.Scripts.DragAndDrop
 
         private void OnHold(InputAction.CallbackContext context)
         {
-            var pos = GetPointerPosition();
+            var position = GetPointerPosition();
             
-            if(Math.Abs(_xPosition - pos.x) < .5f)
+            if(IsHoldingPointer(position))
             {
                 var pointerEventData = new PointerEventData(eventSystem)
                 {
-                    position = pos
+                    position = position
                 };
+                
                 // Debug.Log($"Holding preformed: {pos}");
                 List<RaycastResult> results = new List<RaycastResult>();
                 graphicRaycaster.Raycast(pointerEventData, results);
-                Debug.Log("results.length: " +results.Count);
+                Debug.Log("results.length: " + results.Count);
                 //For every result returned, output the name of the GameObject on the Canvas hit by the Ray
-                foreach (RaycastResult result in results)
+                for(int i = 0; i < results.Count; i++)
                 {
-                    // Debug.Log("Hit " + result.gameObject.name);
+                    var result = results[i];
+                    Debug.Log($"Result {i}: {result.gameObject.name}");
+                    
+                    // Check if the result is a UIItem and call its OnClick method
+                    var uiItem = result.gameObject.GetComponent<UIItem>();
+                    if (uiItem != null)
+                    {
+                        uiItem.OnClick();
+                        break;
+                    }
                 }
             }
         }
@@ -66,6 +76,11 @@ namespace Game.Scripts.DragAndDrop
         private Vector2 GetPointerPosition()
         {
             return screenPosition.action.ReadValue<Vector2>();
+        }
+
+        private bool IsHoldingPointer(Vector2 position)
+        {
+            return Math.Abs(_xPosition - position.x) < .5f;
         }
 
     
