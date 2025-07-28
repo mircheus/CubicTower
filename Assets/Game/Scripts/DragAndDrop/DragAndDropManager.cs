@@ -19,6 +19,7 @@ namespace Game.Scripts.DragAndDrop
         [SerializeField] private Cubic cubicPrefab;
         [SerializeField] private Camera mainCamera;
         [SerializeField] private ScrollRect scrollRect;
+        [SerializeField] private Transform floor;
 
         private float _xPosition;
         private bool _isDragging;
@@ -49,7 +50,7 @@ namespace Game.Scripts.DragAndDrop
             _isDragging = false;
             _xPosition = 0f; // Reset the x position when hold is canceled
             scrollRect.horizontal = true; // Re-enable horizontal scrolling
-            StopAllCoroutines(); // Stop any ongoing drag updates
+            // StopAllCoroutines(); // Stop any ongoing drag updates
         }
 
         private void OnHoldStarted(InputAction.CallbackContext obj)
@@ -102,8 +103,8 @@ namespace Game.Scripts.DragAndDrop
             var position = clickedObject.transform.position;
             float initialDistance = Vector3.Distance(position, mainCamera.transform.position);
             float initialCoordinateZ = position.z;
-            // clickedObject.TryGetComponent<IDraggable>(out var iDraggable);
-            // iDraggable?.StartDrag();
+            clickedObject.TryGetComponent<IDraggable>(out var iDraggable);
+            iDraggable?.StartDrag(floor);
             _isDragging = true;
               
             while (_isDragging)
@@ -115,8 +116,9 @@ namespace Game.Scripts.DragAndDrop
                 clickedObject.transform.position = Vector3.SmoothDamp(clickedObject.transform.position, target, ref _velocity, _dragSpeed);
                 yield return null;
             }
-              
-            // iDraggable?.EndDrag();
+
+            Debug.Log("EndDrag Coroutine");
+            iDraggable?.EndDrag();
         }
 
         private Vector2 GetPointerPosition()
@@ -128,7 +130,5 @@ namespace Game.Scripts.DragAndDrop
         {
             return Math.Abs(_xPosition - position.x) < .5f;
         }
-
-    
     }
 }
