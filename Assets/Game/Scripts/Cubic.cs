@@ -6,10 +6,13 @@ namespace Game.Scripts
 {
     public class Cubic : MonoBehaviour, IDraggable
     {
-        [SerializeField] private LayerMask layerMask;
+        [SerializeField] private LayerMask cubicLayerMask;
+        [SerializeField] private LayerMask dropZoneLayerMask;
         [SerializeField] private Transform rayPoint;
+        [SerializeField] private BoxCollider2D boxCollider;
         
         private Transform _floor;
+        
 
         public void StartDrag(Transform floor)
         {
@@ -18,13 +21,19 @@ namespace Game.Scripts
 
         public void EndDrag()
         {
-            MoveDown();
-            Raycast2DRay();
+            if (IsDropZone())
+            {
+                Raycast2DRay();
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
 
         private void Raycast2DRay()
         {
-            var result = Physics2D.Raycast(rayPoint.position, Vector2.down, 20f, layerMask);
+            var result = Physics2D.Raycast(rayPoint.position, Vector2.down, 20f, cubicLayerMask);
             
             if(result.collider != null)
             {
@@ -45,6 +54,29 @@ namespace Game.Scripts
         {
             Vector3 targetPosition = position != default(Vector3) ? position : _floor.position;
             transform.DOMoveY(targetPosition.y, 1f).SetEase(Ease.Linear);
+        }
+
+        private bool IsDropZone()
+        {
+            var colliders = Physics2D.OverlapBoxAll(
+                boxCollider.bounds.center, 
+                boxCollider.bounds.size, 
+                0f, 
+                dropZoneLayerMask
+            );
+
+            foreach (var collider in colliders)
+            {
+                if (collider.TryGetComponent(out DropZone dropZone))
+                {
+                    // Handle drop zone logic here
+                    Debug.Log($"Dropped on: {collider.name}");
+                    return true;
+                }
+            }
+
+            Debug.Log("No valid drop zone found.");
+            return false;
         }
     }
 }
