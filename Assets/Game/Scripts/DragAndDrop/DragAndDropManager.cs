@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -15,15 +16,22 @@ namespace Game.Scripts.DragAndDrop
         [SerializeField] private InputActionReference screenPosition;
         [SerializeField] private LayerMask raycastLayerMask;
         [SerializeField] private float raycastDistance = 100f;
+        [SerializeField] private Cubic cubicPrefab;
+        [SerializeField] private Camera mainCamera;
+        [SerializeField] private ScrollRect scrollRect;
 
         private float _xPosition;
-        
+        private bool _isDragging;
+        private float _dragSpeed = 0.1f;
+        private Vector3 _velocity = Vector3.zero;
+
         private void OnEnable()
         {
             holdAction.action.Enable();
             screenPosition.action.Enable();
             holdAction.action.performed += OnHold;
             holdAction.action.started += OnHoldStarted;
+            holdAction.action.canceled += OnHoldCanceled;
         }
 
         private void OnDisable()
@@ -32,6 +40,16 @@ namespace Game.Scripts.DragAndDrop
             screenPosition.action.Disable();
             holdAction.action.performed -= OnHold;
             holdAction.action.started -= OnHoldStarted;
+            holdAction.action.canceled -= OnHoldCanceled;
+        }
+
+        private void OnHoldCanceled(InputAction.CallbackContext obj)
+        {
+            // Debug.Log("Hold canceled");
+            _isDragging = false;
+            _xPosition = 0f; // Reset the x position when hold is canceled
+            scrollRect.horizontal = true; // Re-enable horizontal scrolling
+            StopAllCoroutines(); // Stop any ongoing drag updates
         }
 
         private void OnHoldStarted(InputAction.CallbackContext obj)
@@ -67,10 +85,38 @@ namespace Game.Scripts.DragAndDrop
                     if (uiItem != null)
                     {
                         uiItem.OnClick();
+                        Ray ray = mainCamera.ScreenPointToRay(screenPosition.action.ReadValue<Vector2>());
+                        Vector3 tempRay = ray.GetPoint(10f);
+                        Vector3 target = new Vector3(tempRay.x, tempRay.y, 0);
+                        Cubic cubic = Instantiate(cubicPrefab, target, Quaternion.identity);
+                        StartCoroutine(DragUpdate(cubic.gameObject));
+                        scrollRect.horizontal = false;
                         break;
                     }
                 }
             }
+        }
+        
+        private IEnumerator DragUpdate(GameObject clickedObject)
+        {
+            var position = clickedObject.transform.position;
+            float initialDistance = Vector3.Distance(position, mainCamera.transform.position);
+            float initialCoordinateZ = position.z;
+            // clickedObject.TryGetComponent<IDraggable>(out var iDraggable);
+            // iDraggable?.StartDrag();
+            _isDragging = true;
+              
+            while (_isDragging)
+            { 
+                Ray ray = mainCamera.ScreenPointToRay(screenPosition.action.ReadValue<Vector2>());
+                Vector3 tempRay = ray.GetPoint(initialDistance);
+                Vector3 target = new Vector3(tempRay.x, tempRay.y, initialCoordinateZ);
+                // target += offsetVector;
+                clickedObject.transform.position = Vector3.SmoothDamp(clickedObject.transform.position, target, ref _velocity, _dragSpeed);
+                yield return null;
+            }
+              
+            // iDraggable?.EndDrag();
         }
 
         private Vector2 GetPointerPosition()
