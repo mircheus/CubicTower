@@ -44,6 +44,14 @@ namespace Game.Scripts.DragAndDrop
             holdAction.action.canceled -= OnHoldCanceled;
         }
 
+        private void Update()
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Debug.Log("ScreenPosition: " + screenPosition.action.ReadValue<Vector2>());
+            }
+        }
+
         private void OnHoldCanceled(InputAction.CallbackContext obj)
         {
             // Debug.Log("Hold canceled");

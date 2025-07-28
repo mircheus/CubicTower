@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Game.Scripts
+namespace Game.Scripts.DragAndDrop
 {
     public interface IDraggable
     {
