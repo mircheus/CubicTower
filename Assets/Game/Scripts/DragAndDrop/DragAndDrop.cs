@@ -10,31 +10,29 @@ using Zenject;
 
 namespace Game.Scripts.DragAndDrop
 {
-    public class DragAndDropManager : MonoBehaviour
+    public class DragAndDrop : MonoBehaviour
     {
+        [Header("References: ")]
         [SerializeField] private EventSystem eventSystem;
         [SerializeField] private GraphicRaycaster graphicRaycaster;
         [SerializeField] private InputActionReference holdAction;
         [SerializeField] private InputActionReference screenPosition;
         [SerializeField] private InputActionReference touchAction;
-        [SerializeField] private LayerMask UILayerMask;
-        [SerializeField] private LayerMask cubicsLayerMask;
+        [SerializeField] private LayerMask cubesLayerMask;
         [SerializeField] private float raycastDistance = 100f;
-        [SerializeField] private Cube cubePrefab;
         [SerializeField] private Camera mainCamera;
         [SerializeField] private ScrollRect scrollRect;
-        [SerializeField] private Transform floor;
 
         private float _xPosition;
         private bool _isDragging;
         private float _dragSpeed = 0.1f;
         private Vector3 _velocity = Vector3.zero;
-        private CubeFactory _cubeFactory;
+        private CubeSpawner _cubeSpawner;
 
         [Inject]
-        public void Construct(CubeFactory factory)
+        public void Construct(CubeSpawner cubeSpawner)
         {
-            _cubeFactory = factory;
+            _cubeSpawner = cubeSpawner;
         }
         
         private void OnEnable()
@@ -96,9 +94,7 @@ namespace Game.Scripts.DragAndDrop
                         Ray ray = mainCamera.ScreenPointToRay(screenPosition.action.ReadValue<Vector2>());
                         Vector3 tempRay = ray.GetPoint(10f);
                         Vector3 target = new Vector3(tempRay.x, tempRay.y, 0);
-                        // Cube cube = Instantiate(cubePrefab, target, Quaternion.identity);
-                        Cube cube = _cubeFactory.GetCube(cubeIcon.CubeType);
-                        cube.OnSpawn(target);
+                        Cube cube = _cubeSpawner.SpawnCube(cubeIcon.CubeType, target);
                         StartCoroutine(DragUpdate(cube.gameObject));
                         scrollRect.horizontal = false; // TODO: вынести в события
                         break;
@@ -110,7 +106,7 @@ namespace Game.Scripts.DragAndDrop
         private void OnTouchPerformed(InputAction.CallbackContext obj)
         {
             Ray ray = mainCamera.ScreenPointToRay(screenPosition.action.ReadValue<Vector2>());
-            RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, raycastDistance, cubicsLayerMask);
+            RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, raycastDistance, cubesLayerMask);
             
             if (hit2D.collider != null && hit2D.collider.gameObject.TryGetComponent(out IDraggable draggable))
             {

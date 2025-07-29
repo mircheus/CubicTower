@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Game.Scripts.ObjectPool;
 using UnityEngine;
 
 namespace Game.Scripts.Cubes
@@ -30,8 +31,6 @@ namespace Game.Scripts.Cubes
 
         public void ReturnToPool(T instance)
         {
-            instance.OnDespawn();
-            instance.transform.SetParent(_parent);
             _pool.Enqueue(instance);
         }
     }

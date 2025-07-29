@@ -1,11 +1,10 @@
 ﻿using System;
 using DG.Tweening;
-using Game.Scripts.Cubes;
 using Game.Scripts.DragAndDrop;
+using Game.Scripts.ObjectPool;
 using UnityEngine;
-using UnityEngine.Rendering;
 
-namespace Game.Scripts
+namespace Game.Scripts.Cubes
 {
     public class Cube : MonoBehaviour, IDraggable, IPoolable
     {
@@ -98,11 +97,19 @@ namespace Game.Scripts
             return Physics2D.Raycast(rayPoint, Vector2.down, 40f, cubeLayerMask);
         }
 
-        private void SelfDestroy() // TODO: переделать на pool
+        public void OnSpawn()
+        {
+            gameObject.SetActive(true);
+        }
+
+        public void OnDespawn()
+        {
+            gameObject.SetActive(false);
+        }
+
+        private void SelfDestroy()
         {
             Destroyed?.Invoke(this);
-            // Destroy(gameObject);
-            OnDespawn();
         }
 
         private bool IsDropZone()
@@ -133,17 +140,6 @@ namespace Game.Scripts
             return new Vector3(position.x,
                 position.y - halfSize.y - 0.1f, 
                 position.z);
-        }
-
-        public void OnSpawn(Vector2 position)
-        {
-            transform.position = position;
-            gameObject.SetActive(true);
-        }
-
-        public void OnDespawn()
-        {
-            
         }
     }
 }

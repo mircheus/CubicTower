@@ -1,30 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
-using Game.Scripts;
 using Game.Scripts.Cubes;
 using UnityEngine;
 using Zenject;
 
-public class GameInstaller : MonoInstaller
+namespace Game.Scripts
 {
-    [Header("References: ")]
-    [SerializeField] private Cube cubePrefab; 
-    [SerializeField] private CubeTypesList cubeTypesList;
-    [SerializeField] private Transform poolParent;
-    
-    [Header("Settings: ")]
-    [SerializeField] private int poolSize = 25; // TODO: вынести в настройки
-    
-    public override void InstallBindings()
+    public class GameInstaller : MonoInstaller
     {
-        Container.Bind<CubeTypesList>().FromInstance(cubeTypesList).AsSingle();
-        BindCubeFactory();
-    }
+        [Header("References: ")]
+        [SerializeField] private Cube cubePrefab; 
+        [SerializeField] private CubeTypesList cubeTypesList;
+        [SerializeField] private Transform poolParent;
     
-    private void BindCubeFactory()
-    {
-        ObjectPool<Cube> objectPool = new ObjectPool<Cube>(cubePrefab, poolSize, poolParent);
-        CubeFactory cubeFactory = new CubeFactory(cubeTypesList, objectPool);
-        Container.Bind<CubeFactory>().FromInstance(cubeFactory).AsSingle().NonLazy();
+        [Header("Settings: ")]
+        [SerializeField] private int poolSize = 25; // TODO: вынести в настройки
+    
+        public override void InstallBindings()
+        {
+            Container.Bind<CubeTypesList>().FromInstance(cubeTypesList).AsSingle();
+            BindSpawner();
+        }
+
+        private void BindSpawner()
+        {
+            ObjectPool<Cube> objectPool = new ObjectPool<Cube>(cubePrefab, poolSize, poolParent);
+            CubeFactory cubeFactory = new CubeFactory(cubeTypesList, objectPool);
+            CubeSpawner cubeSpawner = new CubeSpawner(cubeFactory);
+            Container.Bind<CubeFactory>().FromInstance(cubeFactory).AsSingle().NonLazy();
+            Container.Bind<CubeSpawner>().FromInstance(cubeSpawner).AsSingle().NonLazy();
+        }
     }
 }

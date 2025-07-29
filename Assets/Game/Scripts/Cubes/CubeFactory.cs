@@ -13,7 +13,7 @@ namespace Game.Scripts.Cubes
             _cubeTypes = new List<CubeType>(cubeTypesList.CubeTypes);
             _cubePool = cubePool;
         }
-        
+
         public Cube GetCube(CubeType cubeType)
         {
             if (_cubeTypes.Contains(cubeType) == false)
@@ -26,9 +26,9 @@ namespace Game.Scripts.Cubes
             return cube;
         }
         
-        public void ReturnCubeToPool(Cube figure)
+        public void ReturnCubeToPool(Cube cube)
         {
-            _cubePool.ReturnToPool(figure);
+            _cubePool.ReturnToPool(cube);
         }
     }
 }

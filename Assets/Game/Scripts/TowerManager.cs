@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Game.Scripts.Cubes;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -10,7 +11,7 @@ namespace Game.Scripts
 
         private List<Cube> _cubesList = new List<Cube>();
         
-        public void AddCube(Cube cube)
+        public virtual void AddCube(Cube cube)
         {
             if (cube == null)
             {

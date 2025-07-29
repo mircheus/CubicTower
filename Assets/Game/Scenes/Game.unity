@@ -425,7 +425,7 @@ MonoBehaviour:
   UILayerMask:
     serializedVersion: 2
     m_Bits: 32
-  cubicsLayerMask:
+  cubesLayerMask:
     serializedVersion: 2
     m_Bits: 64
   raycastDistance: 100

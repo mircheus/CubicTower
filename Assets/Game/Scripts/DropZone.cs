@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Game.Scripts.Cubes;
+using UnityEngine;
 
 namespace Game.Scripts
 {

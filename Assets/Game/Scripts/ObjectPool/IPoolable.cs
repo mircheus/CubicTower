@@ -1,10 +1,8 @@
-using UnityEngine;
-
-namespace Game.Scripts.Cubes
+namespace Game.Scripts.ObjectPool
 {
     public interface IPoolable
     {
-        void OnSpawn(Vector2 position);
+        void OnSpawn();
         void OnDespawn();
     }
 }
