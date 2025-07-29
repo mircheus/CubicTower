@@ -12,9 +12,14 @@ namespace Game.Scripts
     {
         [SerializeField] private Image image;
 
+        private CubeType _cubeType;
+
+        public CubeType CubeType => _cubeType;
+        
         public void Initialize(CubeType cubeType)
         {
-            image.sprite = cubeType.CubeSprite;
+            _cubeType = cubeType;
+            image.sprite = _cubeType.CubeSprite;
         }
     }
 }

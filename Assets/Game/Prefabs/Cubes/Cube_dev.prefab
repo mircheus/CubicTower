@@ -301,15 +301,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cba7c36d2b3544399ebfce43981ae600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 6786106159365579431}
   cubeLayerMask:
     serializedVersion: 2
     m_Bits: 64
   dropZoneLayerMask:
     serializedVersion: 2
     m_Bits: 128
-  ignoreRaycast:
-    serializedVersion: 2
-    m_Bits: 4
   boxCollider: {fileID: 7338022185447549244}
 --- !u!61 &7338022185447549244
 BoxCollider2D:

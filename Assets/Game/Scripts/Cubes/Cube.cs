@@ -7,7 +7,7 @@ using UnityEngine.Rendering;
 
 namespace Game.Scripts
 {
-    public class Cube : MonoBehaviour, IDraggable
+    public class Cube : MonoBehaviour, IDraggable, IPoolable
     {
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private LayerMask cubeLayerMask;
@@ -101,7 +101,8 @@ namespace Game.Scripts
         private void SelfDestroy() // TODO: переделать на pool
         {
             Destroyed?.Invoke(this);
-            Destroy(gameObject);
+            // Destroy(gameObject);
+            OnDespawn();
         }
 
         private bool IsDropZone()
@@ -132,6 +133,17 @@ namespace Game.Scripts
             return new Vector3(position.x,
                 position.y - halfSize.y - 0.1f, 
                 position.z);
+        }
+
+        public void OnSpawn(Vector2 position)
+        {
+            transform.position = position;
+            gameObject.SetActive(true);
+        }
+
+        public void OnDespawn()
+        {
+            
         }
     }
 }

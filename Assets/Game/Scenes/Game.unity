@@ -199,7 +199,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e338d2638436e245b4847ff1a6d764e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cubePrefab: {fileID: 2569640217894544207, guid: 668724a3ee22d2242bd7748ac311f9c5, type: 3}
   cubeTypesList: {fileID: 11400000, guid: 3cc4bc92cb85d7448be3eaef5a5d9da1, type: 2}
+  poolParent: {fileID: 1931970309}
+  poolSize: 25
 --- !u!1 &90767936
 GameObject:
   m_ObjectHideFlags: 0
@@ -1300,6 +1303,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1931970308
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1931970309}
+  m_Layer: 0
+  m_Name: CubePool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1931970309
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1931970308}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2023351829
 GameObject:
   m_ObjectHideFlags: 0
@@ -1542,6 +1576,7 @@ SceneRoots:
   - {fileID: 619394802}
   - {fileID: 361896663}
   - {fileID: 34217715}
+  - {fileID: 1931970309}
   - {fileID: 90767937}
   - {fileID: 1346786514}
   - {fileID: 2023351832}

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Game.Scripts.Cubes;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Zenject;
 
 namespace Game.Scripts.DragAndDrop
 {
@@ -27,7 +29,14 @@ namespace Game.Scripts.DragAndDrop
         private bool _isDragging;
         private float _dragSpeed = 0.1f;
         private Vector3 _velocity = Vector3.zero;
+        private CubeFactory _cubeFactory;
 
+        [Inject]
+        public void Construct(CubeFactory factory)
+        {
+            _cubeFactory = factory;
+        }
+        
         private void OnEnable()
         {
             holdAction.action.Enable();
@@ -81,17 +90,17 @@ namespace Game.Scripts.DragAndDrop
                 for(int i = 0; i < results.Count; i++)
                 {
                     var result = results[i];
-                    // var uiItem = result.gameObject.GetComponent<UIItem>();
-                    
-                    // if (uiItem != null)
-                    if (result.gameObject.TryGetComponent(out CubeIcon uiItem))
+
+                    if (result.gameObject.TryGetComponent(out CubeIcon cubeIcon))
                     {
                         Ray ray = mainCamera.ScreenPointToRay(screenPosition.action.ReadValue<Vector2>());
                         Vector3 tempRay = ray.GetPoint(10f);
                         Vector3 target = new Vector3(tempRay.x, tempRay.y, 0);
-                        Cube cube = Instantiate(cubePrefab, target, Quaternion.identity);
+                        // Cube cube = Instantiate(cubePrefab, target, Quaternion.identity);
+                        Cube cube = _cubeFactory.GetCube(cubeIcon.CubeType);
+                        cube.OnSpawn(target);
                         StartCoroutine(DragUpdate(cube.gameObject));
-                        scrollRect.horizontal = false;
+                        scrollRect.horizontal = false; // TODO: вынести в события
                         break;
                     }
                 }
