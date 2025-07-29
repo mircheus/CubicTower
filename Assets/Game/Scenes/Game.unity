@@ -202,6 +202,7 @@ MonoBehaviour:
   cubePrefab: {fileID: 2569640217894544207, guid: 668724a3ee22d2242bd7748ac311f9c5, type: 3}
   cubeTypesList: {fileID: 11400000, guid: 3cc4bc92cb85d7448be3eaef5a5d9da1, type: 2}
   poolParent: {fileID: 1931970309}
+  towerManager: {fileID: 1133190859}
   poolSize: 25
 --- !u!1 &90767936
 GameObject:
@@ -422,17 +423,12 @@ MonoBehaviour:
   holdAction: {fileID: 1804986060446429783, guid: f0cef0747f6c4c34a97d669de83bcee2, type: 3}
   screenPosition: {fileID: -723423180152048924, guid: f0cef0747f6c4c34a97d669de83bcee2, type: 3}
   touchAction: {fileID: -8797102390266849703, guid: f0cef0747f6c4c34a97d669de83bcee2, type: 3}
-  UILayerMask:
-    serializedVersion: 2
-    m_Bits: 32
   cubesLayerMask:
     serializedVersion: 2
     m_Bits: 64
   raycastDistance: 100
-  cubePrefab: {fileID: 2569640217894544207, guid: 668724a3ee22d2242bd7748ac311f9c5, type: 3}
   mainCamera: {fileID: 361896662}
   scrollRect: {fileID: 997780538}
-  floor: {fileID: 1385594016}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -1071,6 +1067,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floor: {fileID: 1385594016}
+  cubeFallDuration: 1
 --- !u!4 &1133190860
 Transform:
   m_ObjectHideFlags: 0

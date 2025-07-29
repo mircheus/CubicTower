@@ -10,6 +10,7 @@ namespace Game.Scripts
         [SerializeField] private Cube cubePrefab; 
         [SerializeField] private CubeTypesList cubeTypesList;
         [SerializeField] private Transform poolParent;
+        [SerializeField] private TowerManager towerManager;
     
         [Header("Settings: ")]
         [SerializeField] private int poolSize = 25; // TODO: вынести в настройки
@@ -24,7 +25,7 @@ namespace Game.Scripts
         {
             ObjectPool<Cube> objectPool = new ObjectPool<Cube>(cubePrefab, poolSize, poolParent);
             CubeFactory cubeFactory = new CubeFactory(cubeTypesList, objectPool);
-            CubeSpawner cubeSpawner = new CubeSpawner(cubeFactory);
+            CubeSpawner cubeSpawner = new CubeSpawner(cubeFactory, towerManager, poolParent);
             Container.Bind<CubeFactory>().FromInstance(cubeFactory).AsSingle().NonLazy();
             Container.Bind<CubeSpawner>().FromInstance(cubeSpawner).AsSingle().NonLazy();
         }

@@ -1,8 +1,10 @@
-﻿using System;
+using System;
 using DG.Tweening;
 using Game.Scripts.DragAndDrop;
 using Game.Scripts.ObjectPool;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering.VirtualTexturing;
 
 namespace Game.Scripts.Cubes
 {
@@ -34,6 +36,11 @@ namespace Game.Scripts.Cubes
 
         public void EndDrag()
         {
+            if (IsOverlapCubes())
+            {
+                SelfDestroy();
+            }
+            
             if (IsDropZone()) // TODO: переписать 
             {
                 // Raycast2DRay();
@@ -83,7 +90,7 @@ namespace Game.Scripts.Cubes
         public bool IsAnyCubeBeneath()
         {
             var rayPoint = CalculateRayPoint();
-            var hits = Physics2D.RaycastAll(rayPoint, Vector2.down, cubeLayerMask);
+            var hits = Physics2D.RaycastAll(rayPoint, Vector2.down, boxCollider.bounds.size.y + 0.1f, cubeLayerMask);
             return hits.Length > 1;
         }
 
@@ -127,6 +134,18 @@ namespace Game.Scripts.Cubes
             }
             
             return false;
+        }
+
+        private bool IsOverlapCubes()
+        {
+            var colliders = Physics2D.OverlapBoxAll(
+                boxCollider.bounds.center, 
+                boxCollider.bounds.size, 
+                0f, 
+                cubeLayerMask
+            );
+            
+            return colliders.Length > 1;
         }
 
         private Vector3 CalculateRayPoint()
