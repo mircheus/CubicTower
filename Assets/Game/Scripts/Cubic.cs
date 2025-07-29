@@ -13,13 +13,22 @@ namespace Game.Scripts
         [SerializeField] private BoxCollider2D boxCollider;
         
         private Transform _floor;
+        private float _cubicHeight;
         
-        public event Action DragStarted;
+        public event Action<Cubic> DragStarted;
         public event Action DragEnded;
+        public event Action<Cubic> Destroyed;
+
+        public float CubicHeight => _cubicHeight;
+        
+        private void OnEnable()
+        {
+            _cubicHeight = boxCollider.bounds.size.y;
+        }
 
         public void StartDrag()
         {
-
+            DragStarted?.Invoke(this);
         }
 
         public void EndDrag()
@@ -30,10 +39,16 @@ namespace Game.Scripts
             }
             else
             {
-                Destroy(gameObject);
+                SelfDestroy();
             }
         }
-        
+
+        private void SelfDestroy() // TODO: переделать на pool
+        {
+            Destroyed?.Invoke(this);
+            Destroy(gameObject);
+        }
+
         public void SetFloor(Transform floor)
         {
             _floor = floor;

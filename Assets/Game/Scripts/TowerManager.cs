@@ -8,8 +8,8 @@ namespace Game.Scripts
     {
         [SerializeField] private Transform floor;
         
-        private List<Cubic> cubicList = new List<Cubic>();
-
+        private List<Cubic> _cubicList = new List<Cubic>();
+        
         public void AddCubic(Cubic cubic)
         {
             if (cubic == null)
@@ -18,9 +18,9 @@ namespace Game.Scripts
                 return;
             }
             
-            if (cubicList.Count <= 0)
+            if (_cubicList.Count <= 0)
             {
-                cubicList.Add(cubic);
+                AddCubicToList(cubic);
                 cubic.SetFloor(floor);
                 cubic.MoveDownTo();
             }
@@ -28,7 +28,7 @@ namespace Game.Scripts
             {
                 if(cubic.TryGetTargetPoint(out Vector2 targetPosition))
                 {
-                    cubicList.Add(cubic);
+                    AddCubicToList(cubic);
                     cubic.MoveDownTo(targetPosition);
                 }
                 else
@@ -36,6 +36,32 @@ namespace Game.Scripts
                     Destroy(cubic.gameObject);
                 }
             }
+        }
+
+        private void AddCubicToList(Cubic cubic)
+        {
+            _cubicList.Add(cubic);
+            cubic.DragStarted += OnDragStarted;
+            cubic.Destroyed += RemoveCubicFromList;
+        }
+
+        private void RemoveCubicFromList(Cubic cubic)
+        {
+            _cubicList.Remove(cubic);
+            cubic.Destroyed -= RemoveCubicFromList;
+            cubic.DragStarted -= OnDragStarted;
+        }
+
+        private void OnDragStarted(Cubic cubic)
+        {
+            int cubicIndex = _cubicList.IndexOf(cubic);
+            
+            for(int i = _cubicList.Count - 1; i > cubicIndex; i--)
+            {
+                _cubicList[i].MoveDownTo(_cubicList[i - 1].transform.position);
+            }
+
+            RemoveCubicFromList(cubic);
         }
     }
 }
