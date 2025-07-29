@@ -14,7 +14,9 @@ namespace Game.Scripts.DragAndDrop
         [SerializeField] private GraphicRaycaster graphicRaycaster;
         [SerializeField] private InputActionReference holdAction;
         [SerializeField] private InputActionReference screenPosition;
-        [SerializeField] private LayerMask raycastLayerMask;
+        [SerializeField] private InputActionReference touchAction;
+        [SerializeField] private LayerMask UILayerMask;
+        [SerializeField] private LayerMask cubicsLayerMask;
         [SerializeField] private float raycastDistance = 100f;
         [SerializeField] private Cubic cubicPrefab;
         [SerializeField] private Camera mainCamera;
@@ -30,9 +32,12 @@ namespace Game.Scripts.DragAndDrop
         {
             holdAction.action.Enable();
             screenPosition.action.Enable();
+            touchAction.action.Enable();
             holdAction.action.performed += OnHold;
             holdAction.action.started += OnHoldStarted;
             holdAction.action.canceled += OnHoldCanceled;
+            touchAction.action.performed += OnTouchPerformed;
+            touchAction.action.canceled += OnTouchCanceled;
         }
 
         private void OnDisable()
@@ -42,8 +47,10 @@ namespace Game.Scripts.DragAndDrop
             holdAction.action.performed -= OnHold;
             holdAction.action.started -= OnHoldStarted;
             holdAction.action.canceled -= OnHoldCanceled;
+            touchAction.action.performed -= OnTouchPerformed;
+            touchAction.action.canceled -= OnTouchCanceled;
         }
-        
+
         private void OnHoldCanceled(InputAction.CallbackContext obj)
         {
             _isDragging = false;
@@ -74,9 +81,10 @@ namespace Game.Scripts.DragAndDrop
                 for(int i = 0; i < results.Count; i++)
                 {
                     var result = results[i];
-                    var uiItem = result.gameObject.GetComponent<UIItem>();
+                    // var uiItem = result.gameObject.GetComponent<UIItem>();
                     
-                    if (uiItem != null)
+                    // if (uiItem != null)
+                    if (result.gameObject.TryGetComponent(out UIItem uiItem))
                     {
                         uiItem.OnClick();
                         Ray ray = mainCamera.ScreenPointToRay(screenPosition.action.ReadValue<Vector2>());
@@ -90,14 +98,31 @@ namespace Game.Scripts.DragAndDrop
                 }
             }
         }
-        
+
+        private void OnTouchPerformed(InputAction.CallbackContext obj)
+        {
+            Ray ray = mainCamera.ScreenPointToRay(screenPosition.action.ReadValue<Vector2>());
+            RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, raycastDistance, cubicsLayerMask);
+            
+            if (hit2D.collider != null && hit2D.collider.gameObject.TryGetComponent(out IDraggable draggable))
+            {
+                draggable.StartDrag();
+                StartCoroutine(DragUpdate(hit2D.collider.gameObject));
+            }
+        }
+
+        private void OnTouchCanceled(InputAction.CallbackContext obj)
+        {
+            _isDragging = false;
+        }
+
         private IEnumerator DragUpdate(GameObject clickedObject)
         {
             var position = clickedObject.transform.position;
             float initialDistance = Vector3.Distance(position, mainCamera.transform.position);
             float initialCoordinateZ = position.z;
             clickedObject.TryGetComponent<IDraggable>(out var iDraggable);
-            iDraggable?.StartDrag(floor);
+            iDraggable?.StartDrag();
             _isDragging = true;
               
             while (_isDragging)

@@ -4,7 +4,7 @@ namespace Game.Scripts.DragAndDrop
 {
     public interface IDraggable
     {
-        void StartDrag(Transform floor);
+        void StartDrag();
         void EndDrag();
     }
 }

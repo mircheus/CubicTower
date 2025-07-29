@@ -13,21 +13,26 @@ namespace Game.Scripts
         
         private Transform _floor;
         
-        public void StartDrag(Transform floor)
+        public void StartDrag()
         {
-            _floor = floor;
+
         }
 
         public void EndDrag()
         {
             if (IsDropZone())
             {
-                Raycast2DRay();
+                // Raycast2DRay();
             }
             else
             {
                 Destroy(gameObject);
             }
+        }
+        
+        public void SetFloor(Transform floor)
+        {
+            _floor = floor;
         }
 
         private void Raycast2DRay()
@@ -68,8 +73,7 @@ namespace Game.Scripts
             {
                 if (collider.TryGetComponent(out DropZone dropZone))
                 {
-                    // Handle drop zone logic here
-                    Debug.Log($"Dropped on: {collider.name}");
+                    dropZone.GetCubic(this);
                     return true;
                 }
             }
