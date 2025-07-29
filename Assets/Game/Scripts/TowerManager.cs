@@ -7,7 +7,11 @@ namespace Game.Scripts
 {
     public class TowerManager : MonoBehaviour
     {
+        [Header("References: ")]
         [SerializeField] private Transform floor;
+        
+        [Header("Settings: ")]
+        [SerializeField] private float cubeFallDuration = 1f;
 
         private List<Cube> _cubesList = new List<Cube>();
         
@@ -22,25 +26,18 @@ namespace Game.Scripts
             if (_cubesList.Count <= 0)
             {
                 AddCubeToList(cube);
-                cube.SetFloor(floor);
-                cube.MoveDownTo();
+                cube.MoveDownTo(floor.position, cubeFallDuration);
+                return;
+            }
+            
+            if (cube.TryGetTargetPoint(out Vector2 targetPosition))
+            {
+                AddCubeToList(cube);
+                cube.MoveDownTo(targetPosition, cubeFallDuration);
             }
             else
             {
-                var targetCube = cube.GetTargetCube();
-
-                if (_cubesList.Contains(targetCube) && _cubesList.IndexOf(targetCube) == _cubesList.Count - 1)
-                {
-                    if (cube.TryGetTargetPoint(out Vector2 targetPosition))
-                    {
-                        AddCubeToList(cube);
-                        cube.MoveDownTo(targetPosition);
-                    }
-                }
-                else
-                {
-                    Destroy(cube.gameObject);
-                }
+                cube.SelfDestroy();
             }
         }
 
@@ -66,7 +63,7 @@ namespace Game.Scripts
             {
                 for(int i = _cubesList.Count - 1; i > cubeIndex; i--)
                 {
-                    _cubesList[i].MoveDownTo(_cubesList[i - 1].transform.position);
+                    _cubesList[i].MoveDownTo(_cubesList[i - 1].transform.position, cubeFallDuration);
                 }
             }
             else

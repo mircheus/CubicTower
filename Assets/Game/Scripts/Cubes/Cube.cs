@@ -42,15 +42,9 @@ namespace Game.Scripts.Cubes
             }
         }
 
-        public void SetFloor(Transform floor)
+        public void MoveDownTo(Vector2 position, float duration)
         {
-            _floor = floor;
-        }
-
-        public void MoveDownTo(Vector3 position = default(Vector3))
-        {
-            Vector3 targetPosition = position != default(Vector3) ? position : _floor.position;
-            transform.DOMoveY(targetPosition.y, 1f).SetEase(Ease.Linear);
+            transform.DOMoveY(position.y, duration).SetEase(Ease.Linear);
         }
 
         public bool TryGetTargetPoint(out Vector2 targetPoint)
@@ -71,30 +65,12 @@ namespace Game.Scripts.Cubes
             targetPoint = Vector2.zero;
             return false;
         }
-
-        public virtual Cube GetTargetCube()
-        {
-            var result = RaycastDown();
-
-            if (result.collider != null && result.collider.TryGetComponent(out Cube cube))
-            {
-                return cube;
-            }
-
-            return null;
-        }
-
+        
         public bool IsAnyCubeBeneath()
         {
             var rayPoint = CalculateRayPoint();
             var hits = Physics2D.RaycastAll(rayPoint, Vector2.down, cubeLayerMask);
             return hits.Length > 1;
-        }
-
-        public RaycastHit2D RaycastDown()
-        {
-            var rayPoint = CalculateRayPoint();
-            return Physics2D.Raycast(rayPoint, Vector2.down, 40f, cubeLayerMask);
         }
 
         public void OnSpawn()
@@ -107,9 +83,15 @@ namespace Game.Scripts.Cubes
             gameObject.SetActive(false);
         }
 
-        private void SelfDestroy()
+        public void SelfDestroy()
         {
             Destroyed?.Invoke(this);
+        }
+
+        private RaycastHit2D RaycastDown()
+        {
+            var rayPoint = CalculateRayPoint();
+            return Physics2D.Raycast(rayPoint, Vector2.down, 40f, cubeLayerMask);
         }
 
         private bool IsDropZone()
