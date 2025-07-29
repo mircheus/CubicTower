@@ -59,14 +59,41 @@ namespace Game.Scripts
 
         private void OnDragStarted(Cube cube)
         {
-            int cubicIndex = _cubesList.IndexOf(cube);
-            
-            for(int i = _cubesList.Count - 1; i > cubicIndex; i--)
+            int cubeIndex = _cubesList.IndexOf(cube);
+
+            if (IsCubesFallAvailable(cubeIndex))
             {
-                _cubesList[i].MoveDownTo(_cubesList[i - 1].transform.position);
+                for(int i = _cubesList.Count - 1; i > cubeIndex; i--)
+                {
+                    _cubesList[i].MoveDownTo(_cubesList[i - 1].transform.position);
+                }
+            }
+            else
+            {
+                DestroyAllCubesAbove(cubeIndex);
+            }
+            
+            RemoveCubicFromList(cube);
+        }
+
+        private bool IsCubesFallAvailable(int index)
+        {
+            if (index == _cubesList.Count - 1)
+            {
+                return true;
             }
 
-            RemoveCubicFromList(cube);
+            return _cubesList[index + 1].IsAnyCubeBeneath();
+        }
+
+        private void DestroyAllCubesAbove(int index)
+        {
+            for (int i = _cubesList.Count - 1; i > index; i--)
+            {
+                Destroy(_cubesList[i].gameObject);
+            }
+            
+            _cubesList.RemoveRange(index + 1, _cubesList.Count - index - 1);
         }
     }
 }

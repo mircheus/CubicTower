@@ -8,23 +8,14 @@ namespace Game.Scripts
 {
     public class Cube : MonoBehaviour, IDraggable
     {
-        [SerializeField] private LayerMask cubicLayerMask;
+        [SerializeField] private LayerMask cubeLayerMask;
         [SerializeField] private LayerMask dropZoneLayerMask;
         [SerializeField] private BoxCollider2D boxCollider;
         
         private Transform _floor;
-        private float _cubicHeight;
-        
-        public event Action<Cube> DragStarted;
-        public event Action DragEnded;
-        public event Action<Cube> Destroyed;
 
-        public float CubicHeight => _cubicHeight;
-        
-        private void OnEnable()
-        {
-            _cubicHeight = boxCollider.bounds.size.y;
-        }
+        public event Action<Cube> DragStarted;
+        public event Action<Cube> Destroyed;
 
         public void StartDrag()
         {
@@ -85,12 +76,17 @@ namespace Game.Scripts
             return null;
         }
 
-        public void Raycast2DRay()
+        public bool IsAnyCubeBeneath()
         {
             var rayPoint = CalculateRayPoint();
-            var result = Physics2D.Raycast(rayPoint, Vector2.down, 40f, cubicLayerMask);
+            var hits = Physics2D.RaycastAll(rayPoint, Vector2.down, cubeLayerMask);
+            return hits.Length > 1;
+        }
 
-            
+        public RaycastHit2D RaycastDown()
+        {
+            var rayPoint = CalculateRayPoint();
+            return Physics2D.Raycast(rayPoint, Vector2.down, 40f, cubeLayerMask);
         }
 
         private void SelfDestroy() // TODO: переделать на pool
@@ -116,8 +112,7 @@ namespace Game.Scripts
                     return true;
                 }
             }
-
-            Debug.Log("No valid drop zone found.");
+            
             return false;
         }
 
@@ -128,12 +123,6 @@ namespace Game.Scripts
             return new Vector3(position.x,
                 position.y - halfSize.y - 0.1f, 
                 position.z);
-        }
-
-        private RaycastHit2D RaycastDown()
-        {
-            var rayPoint = CalculateRayPoint();
-            return Physics2D.Raycast(rayPoint, Vector2.down, 40f, cubicLayerMask);
         }
     }
 }
