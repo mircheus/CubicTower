@@ -43,29 +43,18 @@ namespace Game.Scripts.DragAndDrop
             holdAction.action.started -= OnHoldStarted;
             holdAction.action.canceled -= OnHoldCanceled;
         }
-
-        private void Update()
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                Debug.Log("ScreenPosition: " + screenPosition.action.ReadValue<Vector2>());
-            }
-        }
-
+        
         private void OnHoldCanceled(InputAction.CallbackContext obj)
         {
-            // Debug.Log("Hold canceled");
             _isDragging = false;
-            _xPosition = 0f; // Reset the x position when hold is canceled
-            scrollRect.horizontal = true; // Re-enable horizontal scrolling
-            // StopAllCoroutines(); // Stop any ongoing drag updates
+            _xPosition = 0f; 
+            scrollRect.horizontal = true; 
         }
 
         private void OnHoldStarted(InputAction.CallbackContext obj)
         {
             var pos = GetPointerPosition();
             _xPosition = pos.x;
-            // Debug.Log($"OnHoldStarted: {pos}");
         }
 
         private void OnHold(InputAction.CallbackContext context)
@@ -79,18 +68,14 @@ namespace Game.Scripts.DragAndDrop
                     position = position
                 };
                 
-                // Debug.Log($"Holding preformed: {pos}");
                 List<RaycastResult> results = new List<RaycastResult>();
                 graphicRaycaster.Raycast(pointerEventData, results);
-                Debug.Log("results.length: " + results.Count);
-                //For every result returned, output the name of the GameObject on the Canvas hit by the Ray
+
                 for(int i = 0; i < results.Count; i++)
                 {
                     var result = results[i];
-                    Debug.Log($"Result {i}: {result.gameObject.name}");
-                    
-                    // Check if the result is a UIItem and call its OnClick method
                     var uiItem = result.gameObject.GetComponent<UIItem>();
+                    
                     if (uiItem != null)
                     {
                         uiItem.OnClick();
@@ -124,8 +109,7 @@ namespace Game.Scripts.DragAndDrop
                 clickedObject.transform.position = Vector3.SmoothDamp(clickedObject.transform.position, target, ref _velocity, _dragSpeed);
                 yield return null;
             }
-
-            Debug.Log("EndDrag Coroutine");
+            
             iDraggable?.EndDrag();
         }
 

@@ -14,7 +14,6 @@ namespace Game.Scripts
         
         private Transform _floor;
         
-
         public void StartDrag(Transform floor)
         {
             _floor = floor;
@@ -33,9 +32,10 @@ namespace Game.Scripts
         }
 
         private void Raycast2DRay()
-        {
-            var result = Physics2D.Raycast(rayPoint.position, Vector2.down, 20f, cubicLayerMask);
-            
+        { 
+            var rayPoint = CalculateRayPoint();
+            // var result = Physics2D.Raycast(rayPoint.position, Vector2.down, 20f, cubicLayerMask); // TODO: избавиться от RayPoint
+            var result = Physics2D.Raycast(rayPoint, Vector2.down, 20f, cubicLayerMask); // TODO: избавиться от RayPoint
             if(result.collider != null)
             {
                 var halfSize = result.collider.bounds.size / 2;
@@ -78,6 +78,15 @@ namespace Game.Scripts
 
             Debug.Log("No valid drop zone found.");
             return false;
+        }
+
+        private Vector3 CalculateRayPoint()
+        {
+            var halfSize = boxCollider.bounds.size / 2;
+            var position = transform.position;
+            return new Vector3(position.x,
+                position.y - halfSize.y - 0.1f, 
+                position.z);
         }
     }
 }
