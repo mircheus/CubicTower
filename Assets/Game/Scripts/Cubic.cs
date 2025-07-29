@@ -9,7 +9,6 @@ namespace Game.Scripts
     {
         [SerializeField] private LayerMask cubicLayerMask;
         [SerializeField] private LayerMask dropZoneLayerMask;
-        [SerializeField] private Transform rayPoint;
         [SerializeField] private BoxCollider2D boxCollider;
         
         private Transform _floor;
@@ -34,8 +33,7 @@ namespace Game.Scripts
         private void Raycast2DRay()
         { 
             var rayPoint = CalculateRayPoint();
-            // var result = Physics2D.Raycast(rayPoint.position, Vector2.down, 20f, cubicLayerMask); // TODO: избавиться от RayPoint
-            var result = Physics2D.Raycast(rayPoint, Vector2.down, 20f, cubicLayerMask); // TODO: избавиться от RayPoint
+            var result = Physics2D.Raycast(rayPoint, Vector2.down, 20f, cubicLayerMask); 
             if(result.collider != null)
             {
                 var halfSize = result.collider.bounds.size / 2;
