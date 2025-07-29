@@ -84,9 +84,8 @@ namespace Game.Scripts.DragAndDrop
                     // var uiItem = result.gameObject.GetComponent<UIItem>();
                     
                     // if (uiItem != null)
-                    if (result.gameObject.TryGetComponent(out UIItem uiItem))
+                    if (result.gameObject.TryGetComponent(out CubeIcon uiItem))
                     {
-                        uiItem.OnClick();
                         Ray ray = mainCamera.ScreenPointToRay(screenPosition.action.ReadValue<Vector2>());
                         Vector3 tempRay = ray.GetPoint(10f);
                         Vector3 target = new Vector3(tempRay.x, tempRay.y, 0);

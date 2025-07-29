@@ -1,5 +1,6 @@
 ﻿using System;
 using DG.Tweening;
+using Game.Scripts.Cubes;
 using Game.Scripts.DragAndDrop;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -8,15 +9,23 @@ namespace Game.Scripts
 {
     public class Cube : MonoBehaviour, IDraggable
     {
+        [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private LayerMask cubeLayerMask;
         [SerializeField] private LayerMask dropZoneLayerMask;
         [SerializeField] private BoxCollider2D boxCollider;
         
         private Transform _floor;
+        private CubeType _cubeType;
 
         public event Action<Cube> DragStarted;
         public event Action<Cube> Destroyed;
 
+        public void Initialize(CubeType cubeType)
+        {
+            _cubeType = cubeType;
+            spriteRenderer.sprite = _cubeType.CubeSprite;
+        }
+        
         public void StartDrag()
         {
             DragStarted?.Invoke(this);
