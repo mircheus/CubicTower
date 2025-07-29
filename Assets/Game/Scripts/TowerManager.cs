@@ -25,20 +25,35 @@ namespace Game.Scripts
             
             if (_cubesList.Count <= 0)
             {
-                AddCubeToList(cube);
-                cube.MoveDownTo(floor.position, cubeFallDuration);
+                PlaceCubeTo(floor.position, cube);
                 return;
             }
             
+            TryPlaceCube(cube);
+        }
+
+        protected virtual void TryPlaceCube(Cube cube)
+        {
             if (cube.TryGetTargetPoint(out Vector2 targetPosition))
             {
-                AddCubeToList(cube);
-                cube.MoveDownTo(targetPosition, cubeFallDuration);
+                PlaceCubeTo(targetPosition, cube);
             }
             else
             {
                 cube.SelfDestroy();
             }
+        }
+        
+        private void PlaceCubeTo(Vector2 position, Cube cube)
+        {
+            if (cube == null)
+            {
+                Debug.LogError("Cube is null. Cannot place it.");
+                return;
+            }
+            
+            AddCubeToList(cube);
+            cube.MoveDownTo(position, cubeFallDuration);
         }
 
         private void AddCubeToList(Cube cube)

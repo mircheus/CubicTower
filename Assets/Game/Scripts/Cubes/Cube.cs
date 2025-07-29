@@ -18,6 +18,8 @@ namespace Game.Scripts.Cubes
 
         public event Action<Cube> DragStarted;
         public event Action<Cube> Destroyed;
+        
+        public CubeType CubeType => _cubeType;
 
         public void Initialize(CubeType cubeType)
         {
@@ -64,6 +66,18 @@ namespace Game.Scripts.Cubes
 
             targetPoint = Vector2.zero;
             return false;
+        }
+
+        public CubeType GetBeneathCubeColor()
+        {
+            var result = RaycastDown();
+
+            if (result.collider != null && result.collider.TryGetComponent(out Cube cube))
+            {
+                return cube.CubeType;
+            }
+
+            return null;
         }
         
         public bool IsAnyCubeBeneath()
