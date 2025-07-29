@@ -7,61 +7,66 @@ namespace Game.Scripts
     public class TowerManager : MonoBehaviour
     {
         [SerializeField] private Transform floor;
+
+        private List<Cube> _cubesList = new List<Cube>();
         
-        private List<Cubic> _cubicList = new List<Cubic>();
-        
-        public void AddCubic(Cubic cubic)
+        public void AddCube(Cube cube)
         {
-            if (cubic == null)
+            if (cube == null)
             {
                 Debug.LogError("Cubic is null. Cannot add to the list.");
                 return;
             }
             
-            if (_cubicList.Count <= 0)
+            if (_cubesList.Count <= 0)
             {
-                AddCubicToList(cubic);
-                cubic.SetFloor(floor);
-                cubic.MoveDownTo();
+                AddCubeToList(cube);
+                cube.SetFloor(floor);
+                cube.MoveDownTo();
             }
             else
             {
-                if(cubic.TryGetTargetPoint(out Vector2 targetPosition))
+                var targetCube = cube.GetTargetCube();
+
+                if (_cubesList.Contains(targetCube) && _cubesList.IndexOf(targetCube) == _cubesList.Count - 1)
                 {
-                    AddCubicToList(cubic);
-                    cubic.MoveDownTo(targetPosition);
+                    if (cube.TryGetTargetPoint(out Vector2 targetPosition))
+                    {
+                        AddCubeToList(cube);
+                        cube.MoveDownTo(targetPosition);
+                    }
                 }
                 else
                 {
-                    Destroy(cubic.gameObject);
+                    Destroy(cube.gameObject);
                 }
             }
         }
 
-        private void AddCubicToList(Cubic cubic)
+        private void AddCubeToList(Cube cube)
         {
-            _cubicList.Add(cubic);
-            cubic.DragStarted += OnDragStarted;
-            cubic.Destroyed += RemoveCubicFromList;
+            _cubesList.Add(cube);
+            cube.DragStarted += OnDragStarted;
+            cube.Destroyed += RemoveCubicFromList;
         }
 
-        private void RemoveCubicFromList(Cubic cubic)
+        private void RemoveCubicFromList(Cube cube)
         {
-            _cubicList.Remove(cubic);
-            cubic.Destroyed -= RemoveCubicFromList;
-            cubic.DragStarted -= OnDragStarted;
+            _cubesList.Remove(cube);
+            cube.Destroyed -= RemoveCubicFromList;
+            cube.DragStarted -= OnDragStarted;
         }
 
-        private void OnDragStarted(Cubic cubic)
+        private void OnDragStarted(Cube cube)
         {
-            int cubicIndex = _cubicList.IndexOf(cubic);
+            int cubicIndex = _cubesList.IndexOf(cube);
             
-            for(int i = _cubicList.Count - 1; i > cubicIndex; i--)
+            for(int i = _cubesList.Count - 1; i > cubicIndex; i--)
             {
-                _cubicList[i].MoveDownTo(_cubicList[i - 1].transform.position);
+                _cubesList[i].MoveDownTo(_cubesList[i - 1].transform.position);
             }
 
-            RemoveCubicFromList(cubic);
+            RemoveCubicFromList(cube);
         }
     }
 }

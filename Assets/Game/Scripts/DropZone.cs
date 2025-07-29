@@ -6,9 +6,9 @@ namespace Game.Scripts
     {
         [SerializeField] private TowerManager towerManager;
 
-        public void GetCubic(Cubic cubic)
+        public void GetCubic(Cube cube)
         {
-            towerManager.AddCubic(cubic);
+            towerManager.AddCube(cube);
         }
     }
 }

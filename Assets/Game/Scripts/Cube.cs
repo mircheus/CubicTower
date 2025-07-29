@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 
 namespace Game.Scripts
 {
-    public class Cubic : MonoBehaviour, IDraggable
+    public class Cube : MonoBehaviour, IDraggable
     {
         [SerializeField] private LayerMask cubicLayerMask;
         [SerializeField] private LayerMask dropZoneLayerMask;
@@ -15,9 +15,9 @@ namespace Game.Scripts
         private Transform _floor;
         private float _cubicHeight;
         
-        public event Action<Cubic> DragStarted;
+        public event Action<Cube> DragStarted;
         public event Action DragEnded;
-        public event Action<Cubic> Destroyed;
+        public event Action<Cube> Destroyed;
 
         public float CubicHeight => _cubicHeight;
         
@@ -43,12 +43,6 @@ namespace Game.Scripts
             }
         }
 
-        private void SelfDestroy() // TODO: переделать на pool
-        {
-            Destroyed?.Invoke(this);
-            Destroy(gameObject);
-        }
-
         public void SetFloor(Transform floor)
         {
             _floor = floor;
@@ -61,11 +55,10 @@ namespace Game.Scripts
         }
 
         public bool TryGetTargetPoint(out Vector2 targetPoint)
-        { 
-            var rayPoint = CalculateRayPoint();
-            var result = Physics2D.Raycast(rayPoint, Vector2.down, 40f, cubicLayerMask);
+        {
+            var result = RaycastDown();
             
-            if(result.collider != null)
+            if(result.collider != null && result.collider.TryGetComponent(out Cube cube))
             {
                 var halfSize = result.collider.bounds.size / 2;
                 targetPoint = new Vector2(
@@ -78,6 +71,32 @@ namespace Game.Scripts
 
             targetPoint = Vector2.zero;
             return false;
+        }
+
+        public virtual Cube GetTargetCube()
+        {
+            var result = RaycastDown();
+
+            if (result.collider != null && result.collider.TryGetComponent(out Cube cube))
+            {
+                return cube;
+            }
+
+            return null;
+        }
+
+        public void Raycast2DRay()
+        {
+            var rayPoint = CalculateRayPoint();
+            var result = Physics2D.Raycast(rayPoint, Vector2.down, 40f, cubicLayerMask);
+
+            
+        }
+
+        private void SelfDestroy() // TODO: переделать на pool
+        {
+            Destroyed?.Invoke(this);
+            Destroy(gameObject);
         }
 
         private bool IsDropZone()
@@ -109,6 +128,12 @@ namespace Game.Scripts
             return new Vector3(position.x,
                 position.y - halfSize.y - 0.1f, 
                 position.z);
+        }
+
+        private RaycastHit2D RaycastDown()
+        {
+            var rayPoint = CalculateRayPoint();
+            return Physics2D.Raycast(rayPoint, Vector2.down, 40f, cubicLayerMask);
         }
     }
 }

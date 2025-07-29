@@ -18,7 +18,7 @@ namespace Game.Scripts.DragAndDrop
         [SerializeField] private LayerMask UILayerMask;
         [SerializeField] private LayerMask cubicsLayerMask;
         [SerializeField] private float raycastDistance = 100f;
-        [SerializeField] private Cubic cubicPrefab;
+        [SerializeField] private Cube cubePrefab;
         [SerializeField] private Camera mainCamera;
         [SerializeField] private ScrollRect scrollRect;
         [SerializeField] private Transform floor;
@@ -90,8 +90,8 @@ namespace Game.Scripts.DragAndDrop
                         Ray ray = mainCamera.ScreenPointToRay(screenPosition.action.ReadValue<Vector2>());
                         Vector3 tempRay = ray.GetPoint(10f);
                         Vector3 target = new Vector3(tempRay.x, tempRay.y, 0);
-                        Cubic cubic = Instantiate(cubicPrefab, target, Quaternion.identity);
-                        StartCoroutine(DragUpdate(cubic.gameObject));
+                        Cube cube = Instantiate(cubePrefab, target, Quaternion.identity);
+                        StartCoroutine(DragUpdate(cube.gameObject));
                         scrollRect.horizontal = false;
                         break;
                     }
