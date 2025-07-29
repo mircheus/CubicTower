@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Game.Scripts
 {
@@ -8,18 +9,32 @@ namespace Game.Scripts
         [SerializeField] private Transform floor;
         
         private List<Cubic> cubicList = new List<Cubic>();
-        
+
         public void AddCubic(Cubic cubic)
         {
-            if (cubic != null && !cubicList.Contains(cubic))
+            if (cubic == null)
+            {
+                Debug.LogError("Cubic is null. Cannot add to the list.");
+                return;
+            }
+            
+            if (cubicList.Count <= 0)
             {
                 cubicList.Add(cubic);
                 cubic.SetFloor(floor);
-                Debug.Log("Cubic added: " + cubic.name);
+                cubic.MoveDownTo();
             }
             else
             {
-                Debug.LogWarning("Cubic is null or already exists in the list.");
+                if(cubic.TryGetTargetPoint(out Vector2 targetPosition))
+                {
+                    cubicList.Add(cubic);
+                    cubic.MoveDownTo(targetPosition);
+                }
+                else
+                {
+                    Destroy(cubic.gameObject);
+                }
             }
         }
     }

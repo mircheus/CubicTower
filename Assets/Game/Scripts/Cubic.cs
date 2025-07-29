@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using System;
+using DG.Tweening;
 using Game.Scripts.DragAndDrop;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -13,6 +14,9 @@ namespace Game.Scripts
         
         private Transform _floor;
         
+        public event Action DragStarted;
+        public event Action DragEnded;
+
         public void StartDrag()
         {
 
@@ -20,7 +24,7 @@ namespace Game.Scripts
 
         public void EndDrag()
         {
-            if (IsDropZone())
+            if (IsDropZone()) // TODO: переписать 
             {
                 // Raycast2DRay();
             }
@@ -35,29 +39,30 @@ namespace Game.Scripts
             _floor = floor;
         }
 
-        private void Raycast2DRay()
-        { 
-            var rayPoint = CalculateRayPoint();
-            var result = Physics2D.Raycast(rayPoint, Vector2.down, 20f, cubicLayerMask); 
-            if(result.collider != null)
-            {
-                var halfSize = result.collider.bounds.size / 2;
-                var closestPoint = new Vector2(
-                    result.point.x,
-                    result.point.y + halfSize.y
-                );
-                MoveDown(closestPoint);
-            }
-            else
-            {
-                MoveDown();
-            }
-        }
-
-        private void MoveDown(Vector3 position = default(Vector3))
+        public void MoveDownTo(Vector3 position = default(Vector3))
         {
             Vector3 targetPosition = position != default(Vector3) ? position : _floor.position;
             transform.DOMoveY(targetPosition.y, 1f).SetEase(Ease.Linear);
+        }
+
+        public bool TryGetTargetPoint(out Vector2 targetPoint)
+        { 
+            var rayPoint = CalculateRayPoint();
+            var result = Physics2D.Raycast(rayPoint, Vector2.down, 40f, cubicLayerMask);
+            
+            if(result.collider != null)
+            {
+                var halfSize = result.collider.bounds.size / 2;
+                targetPoint = new Vector2(
+                    result.point.x,
+                    result.point.y + halfSize.y
+                );
+
+                return true;
+            }
+
+            targetPoint = Vector2.zero;
+            return false;
         }
 
         private bool IsDropZone()

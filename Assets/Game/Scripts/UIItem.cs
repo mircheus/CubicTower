@@ -12,7 +12,7 @@ namespace Game.Scripts
         
         public void OnClick()
         {
-            Debug.Log("Clicked on UIItem: " + gameObject.name);
+            
         }
     }
 }
