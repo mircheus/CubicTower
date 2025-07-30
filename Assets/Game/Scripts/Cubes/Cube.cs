@@ -1,7 +1,9 @@
 using System;
 using DG.Tweening;
+using Game.Scripts.CubeParticleSystem;
 using Game.Scripts.DragAndDrop;
 using Game.Scripts.DropZones;
+using Game.Scripts.Events;
 using Game.Scripts.ObjectPool;
 using UnityEditor;
 using UnityEngine;
@@ -11,6 +13,7 @@ namespace Game.Scripts.Cubes
 {
     public class Cube : MonoBehaviour, IDraggable, IPoolable, IDestroyable
     {
+        [Header("References: ")]
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private LayerMask cubeLayerMask;
         [SerializeField] private LayerMask dropZoneLayerMask;
@@ -113,6 +116,7 @@ namespace Game.Scripts.Cubes
         public void SelfDestroy()
         {
             Destroyed?.Invoke(this);
+            EventBus.RaiseEvent<IDestroyCubeEvents>(module => module.OnCubeDestroyed(transform.position));
         }
 
         public void SetVisibleInsideMask()
