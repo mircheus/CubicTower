@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Game.Scripts.Events;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ namespace Game.Scripts.CubeParticleSystem
 {
     public class CubeParticleSystem : MonoBehaviour, IDestroyCubeEvents
     {
-        [SerializeField] private ParticleSystem destroyFx;
+        [SerializeField] private ParticleSystem[] destroyFx;
 
         private void OnEnable()
         {
@@ -20,8 +21,14 @@ namespace Game.Scripts.CubeParticleSystem
 
         public void OnCubeDestroyed(Vector3 position)
         {
-            destroyFx.gameObject.transform.position = position;
-            destroyFx.gameObject.SetActive(true);
+            var availableFx = destroyFx.FirstOrDefault(fx => fx.gameObject.activeSelf == false);
+            {
+                if (availableFx != null)
+                {
+                    availableFx.gameObject.transform.position = position;
+                    availableFx.gameObject.SetActive(true);
+                }
+            }
         }
     }
 }
