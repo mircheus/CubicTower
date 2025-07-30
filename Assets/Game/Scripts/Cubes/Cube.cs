@@ -62,25 +62,21 @@ namespace Game.Scripts.Cubes
 
         public void MoveDownTo(Vector2 position, float duration)
         {
-            transform.DOMoveY(position.y, duration).SetEase(Ease.InQuint);
+            transform.DOMoveY(position.y, duration).SetEase(Ease.InQuint)
+                .OnComplete(() => transform.DOMoveX(position.x, 0.3f));
         }
 
-        public bool TryGetTargetPoint(out Vector2 targetPoint)
+        public bool TryGetTargetPoint(out RaycastHit2D targetHit)
         {
             var result = RaycastDown();
             
             if(result.collider != null && result.collider.TryGetComponent(out Cube cube))
             {
-                var halfSize = result.collider.bounds.size / 2;
-                targetPoint = new Vector2(
-                    result.point.x,
-                    result.point.y + halfSize.y
-                );
-
+                targetHit = result;
                 return true;
             }
 
-            targetPoint = Vector2.zero;
+            targetHit = default;
             return false;
         }
 

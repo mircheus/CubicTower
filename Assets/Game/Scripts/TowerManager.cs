@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Game.Scripts.Cubes;
+using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -25,7 +26,12 @@ namespace Game.Scripts
             
             if (_cubesList.Count <= 0)
             {
-                PlaceCubeTo(floor.position, cube);
+                Vector2 floorPosition = new Vector2(
+                    cube.transform.position.x,
+                    floor.position.y
+                );
+                
+                PlaceCubeTo(floorPosition, cube);
                 return;
             }
     
@@ -34,14 +40,29 @@ namespace Game.Scripts
 
         protected virtual void TryPlaceCube(Cube cube)
         {
-            if (cube.TryGetTargetPoint(out Vector2 targetPosition))
+            if (cube.TryGetTargetPoint(out RaycastHit2D targetHit))
             {
-                PlaceCubeTo(targetPosition, cube);
+                var targetPoint = CalculateTargetPoint(targetHit);
+                PlaceCubeTo(targetPoint, cube);
             }
             else
             {
                 cube.SelfDestroy();
             }
+        }
+        
+        protected virtual Vector3 CalculateTargetPoint(RaycastHit2D targetHit)
+        {
+            targetHit.collider.TryGetComponent(out Cube targetCube);
+            var bounds = targetHit.collider.bounds;
+            var halfSize = bounds.size / 2;
+            var randomXOffset = RandomizeXPositonOffset(bounds.size);
+            var targetPoint = new Vector2(
+                targetCube.transform.position.x + randomXOffset,
+                targetHit.point.y + halfSize.y
+            );
+
+            return targetPoint;
         }
         
         private void PlaceCubeTo(Vector2 position, Cube cube)
@@ -112,7 +133,14 @@ namespace Game.Scripts
             
             _cubesList.RemoveRange(index + 1, _cubesList.Count - index - 1);
         }
-        
+
+        private float RandomizeXPositonOffset(Vector3 boundsSize)
+        {
+            var halfSize = boundsSize / 2;
+            float randomX = Random.Range(-halfSize.x, halfSize.x);
+            return randomX;
+        }
+
         private void DebugLogCubesList()
         {
             // Debug.Log("__________________");
