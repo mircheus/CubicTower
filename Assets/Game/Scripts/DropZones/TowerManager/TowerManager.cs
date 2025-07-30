@@ -99,7 +99,9 @@ namespace Game.Scripts
             {
                 for(int i = _cubesList.Count - 1; i > cubeIndex; i--)
                 {
-                    _cubesList[i].MoveDownTo(_cubesList[i - 1].transform.position, cubeFallDuration);
+                    var targetPosition = new Vector2(_cubesList[i].transform.position.x,
+                        _cubesList[i - 1].transform.position.y);
+                    _cubesList[i].MoveDownTo(targetPosition, cubeFallDuration);
                 }
             }
             else
