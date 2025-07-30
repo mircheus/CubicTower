@@ -110,6 +110,11 @@ namespace Game.Scripts.DragAndDrop
             
             if (hit2D.collider != null && hit2D.collider.gameObject.TryGetComponent(out IDraggable draggable))
             {
+                if(draggable.IsAbleToDrag == false)
+                {
+                    return;
+                }
+                
                 draggable.StartDrag();
                 StartCoroutine(DragUpdate(hit2D.collider.gameObject));
             }

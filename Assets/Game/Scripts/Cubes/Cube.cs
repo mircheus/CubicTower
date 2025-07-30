@@ -22,12 +22,14 @@ namespace Game.Scripts.Cubes
         private Transform _floor;
         private CubeType _cubeType;
         private bool _isDragging;
+        private bool _isAbleToDrag;
 
         public event Action<Cube> DragStarted;
         public event Action<Cube> Destroyed;
         
         public CubeType CubeType => _cubeType;
         public bool IsDragging => _isDragging;
+        public bool IsAbleToDrag => _isAbleToDrag;
 
         public void Initialize(CubeType cubeType)
         {
@@ -62,8 +64,10 @@ namespace Game.Scripts.Cubes
 
         public void MoveDownTo(Vector2 position, float duration)
         {
+            _isAbleToDrag = false;
             transform.DOMoveY(position.y, duration).SetEase(Ease.InQuint)
-                .OnComplete(() => transform.DOMoveX(position.x, 0.3f));
+                .OnComplete(() => transform.DOMoveX(position.x, 0.3f)
+                    .OnComplete(() =>_isAbleToDrag = true));
         }
 
         public bool TryGetTargetPoint(out RaycastHit2D targetHit)
@@ -80,7 +84,7 @@ namespace Game.Scripts.Cubes
             return false;
         }
 
-        public CubeType GetBeneathCubeColor()
+        public CubeType GetBeneathCubeType()
         {
             var result = RaycastDown();
 
