@@ -5,7 +5,7 @@ namespace Game.Scripts
     public class ScreenAnchor : MonoBehaviour
     {
         [SerializeField] private Vector2 anchor = new(0.5f, 0.5f);
-        [SerializeField] private Camera camera;
+        [SerializeField] private Camera camera; // TODO: Inject камеру
 
         private void OnEnable()
         {
