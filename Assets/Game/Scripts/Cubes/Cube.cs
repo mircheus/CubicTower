@@ -53,9 +53,9 @@ namespace Game.Scripts.Cubes
                 SelfDestroy();
             }
             
-            if (IsDropZone()) // TODO: переписать 
+            if (IsDropZone(out DropZone dropZone))
             {
-                // Raycast2DRay();
+                dropZone.GetCubic(this);
             }
             else
             {
@@ -135,7 +135,7 @@ namespace Game.Scripts.Cubes
             return Physics2D.Raycast(rayPoint, Vector2.down, 40f, raycastMask);
         }
         
-        private bool IsDropZone()
+        private bool IsDropZone(out DropZone dropZone)
         {
             var colliders = Physics2D.OverlapBoxAll(
                 boxCollider.bounds.center, 
@@ -146,13 +146,14 @@ namespace Game.Scripts.Cubes
 
             foreach (var collider in colliders)
             {
-                if (collider.TryGetComponent(out DropZone dropZone))
+                if (collider.TryGetComponent(out DropZone overlapDropZone))
                 {
-                    dropZone.GetCubic(this);
+                    dropZone = overlapDropZone;
                     return true;
                 }
             }
-            
+
+            dropZone = null;
             return false;
         }
 

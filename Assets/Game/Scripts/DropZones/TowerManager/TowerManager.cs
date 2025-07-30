@@ -75,8 +75,6 @@ namespace Game.Scripts
             
             AddCubeToList(cube);
             cube.MoveDownTo(position, cubeFallDuration);
-            
-            DebugLogCubesList();
         }
 
         private void AddCubeToList(Cube cube)
@@ -91,8 +89,6 @@ namespace Game.Scripts
             _cubesList.Remove(cube);
             cube.Destroyed -= RemoveCubicFromList;
             cube.DragStarted -= OnDragStarted;
-            
-            DebugLogCubesList();
         }
 
         private void OnDragStarted(Cube cube)
@@ -128,7 +124,7 @@ namespace Game.Scripts
         {
             for (int i = _cubesList.Count - 1; i > index; i--)
             {
-                Destroy(_cubesList[i].gameObject); // TODO: self-destroy
+                _cubesList[i].SelfDestroy();
             }
             
             _cubesList.RemoveRange(index + 1, _cubesList.Count - index - 1);
@@ -139,15 +135,6 @@ namespace Game.Scripts
             var halfSize = boundsSize / 2;
             float randomX = Random.Range(-halfSize.x, halfSize.x);
             return randomX;
-        }
-
-        private void DebugLogCubesList()
-        {
-            // Debug.Log("__________________");
-            // for(int i = _cubesList.Count - 1; i >= 0; i--)
-            // {
-            //     Debug.Log($"{i}. {_cubesList[i].CubeType}");
-            // }
         }
     }
 }

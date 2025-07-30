@@ -20,9 +20,9 @@ namespace Game.Scripts.DragAndDrop
         [SerializeField] private InputActionReference touchAction;
         [SerializeField] private LayerMask cubesLayerMask;
         [SerializeField] private float raycastDistance = 100f;
-        [SerializeField] private Camera mainCamera;
         [SerializeField] private ScrollRect scrollRect;
 
+        private Camera _mainCamera;
         private float _xPosition;
         private bool _isDragging;
         private float _dragSpeed = 0.1f;
@@ -30,9 +30,10 @@ namespace Game.Scripts.DragAndDrop
         private CubeSpawner _cubeSpawner;
 
         [Inject]
-        public void Construct(CubeSpawner cubeSpawner)
+        public void Construct(CubeSpawner cubeSpawner, Camera mainCamera)
         {
             _cubeSpawner = cubeSpawner;
+            _mainCamera = mainCamera;
         }
         
         private void OnEnable()
@@ -91,12 +92,12 @@ namespace Game.Scripts.DragAndDrop
 
                     if (result.gameObject.TryGetComponent(out CubeIcon cubeIcon))
                     {
-                        Ray ray = mainCamera.ScreenPointToRay(screenPosition.action.ReadValue<Vector2>());
+                        Ray ray = _mainCamera.ScreenPointToRay(screenPosition.action.ReadValue<Vector2>());
                         Vector3 tempRay = ray.GetPoint(10f);
                         Vector3 target = new Vector3(tempRay.x, tempRay.y, 0);
                         Cube cube = _cubeSpawner.SpawnCube(cubeIcon.CubeType, target);
                         StartCoroutine(DragUpdate(cube.gameObject));
-                        scrollRect.horizontal = false; // TODO: вынести в события
+                        scrollRect.horizontal = false; 
                         break;
                     }
                 }
@@ -105,7 +106,7 @@ namespace Game.Scripts.DragAndDrop
 
         private void OnTouchPerformed(InputAction.CallbackContext obj)
         {
-            Ray ray = mainCamera.ScreenPointToRay(screenPosition.action.ReadValue<Vector2>());
+            Ray ray = _mainCamera.ScreenPointToRay(screenPosition.action.ReadValue<Vector2>());
             RaycastHit2D hit2D = Physics2D.GetRayIntersection(ray, raycastDistance, cubesLayerMask);
             
             if (hit2D.collider != null && hit2D.collider.gameObject.TryGetComponent(out IDraggable draggable))
@@ -128,7 +129,7 @@ namespace Game.Scripts.DragAndDrop
         private IEnumerator DragUpdate(GameObject clickedObject)
         {
             var position = clickedObject.transform.position;
-            float initialDistance = Vector3.Distance(position, mainCamera.transform.position);
+            float initialDistance = Vector3.Distance(position, _mainCamera.transform.position);
             float initialCoordinateZ = position.z;
             clickedObject.TryGetComponent<IDraggable>(out var iDraggable);
             iDraggable?.StartDrag();
@@ -136,7 +137,7 @@ namespace Game.Scripts.DragAndDrop
               
             while (_isDragging)
             { 
-                Ray ray = mainCamera.ScreenPointToRay(screenPosition.action.ReadValue<Vector2>());
+                Ray ray = _mainCamera.ScreenPointToRay(screenPosition.action.ReadValue<Vector2>());
                 Vector3 tempRay = ray.GetPoint(initialDistance);
                 Vector3 target = new Vector3(tempRay.x, tempRay.y, initialCoordinateZ);
                 // target += offsetVector;

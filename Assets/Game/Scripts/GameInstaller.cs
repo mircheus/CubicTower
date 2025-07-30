@@ -13,14 +13,16 @@ namespace Game.Scripts
         [SerializeField] private Transform poolParent;
         [SerializeField] private TowerManager towerManager;
         [SerializeField] private MessagesDictionary messagesDictionary;
+        [SerializeField] private Camera mainCamera;
     
         [Header("Settings: ")]
-        [SerializeField] private int poolSize = 25; // TODO: вынести в настройки
+        [SerializeField] private int poolSize = 25; 
     
         public override void InstallBindings()
         {
             Container.Bind<CubeTypesList>().FromInstance(cubeTypesList).AsSingle();
             Container.Bind<MessagesDictionary>().FromInstance(messagesDictionary).AsSingle();
+            Container.Bind<Camera>().FromInstance(mainCamera).AsSingle();
             BindSpawner();
         }
 
