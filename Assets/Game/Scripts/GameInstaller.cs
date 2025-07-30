@@ -1,4 +1,5 @@
 using Game.Scripts.Cubes;
+using Game.Scripts.UI;
 using UnityEngine;
 using Zenject;
 
@@ -11,6 +12,7 @@ namespace Game.Scripts
         [SerializeField] private CubeTypesList cubeTypesList;
         [SerializeField] private Transform poolParent;
         [SerializeField] private TowerManager towerManager;
+        [SerializeField] private MessagesDictionary messagesDictionary;
     
         [Header("Settings: ")]
         [SerializeField] private int poolSize = 25; // TODO: вынести в настройки
@@ -18,6 +20,7 @@ namespace Game.Scripts
         public override void InstallBindings()
         {
             Container.Bind<CubeTypesList>().FromInstance(cubeTypesList).AsSingle();
+            Container.Bind<MessagesDictionary>().FromInstance(messagesDictionary).AsSingle();
             BindSpawner();
         }
 

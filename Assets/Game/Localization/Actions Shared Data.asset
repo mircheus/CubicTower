@@ -16,7 +16,15 @@ MonoBehaviour:
   m_TableCollectionNameGuidString: b53917d1ed4cafa438b95a1b8e2200df
   m_Entries:
   - m_Id: 136397709312
-    m_Key: GetCube
+    m_Key: PlaceCube
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55486991818752
+    m_Key: ThrowCube
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55488963141632
+    m_Key: DespawnCube
     m_Metadata:
       m_Items: []
   m_Metadata:

@@ -1,5 +1,6 @@
 ﻿using System;
 using Game.Scripts.Cubes;
+using Game.Scripts.UI;
 using UnityEngine;
 
 namespace Game.Scripts.DropZones
@@ -19,6 +20,7 @@ namespace Game.Scripts.DropZones
             
             if (hit.collider != null && hit.collider.TryGetComponent(out Hole hole))
             {
+                EventBus.RaiseEvent<IMessageActionEvents>(message => message.Show(MessageAction.ThrowCube));
                 cube.MoveDownTo(hole.TargetTransform.position, 1.5f);
             }
             else

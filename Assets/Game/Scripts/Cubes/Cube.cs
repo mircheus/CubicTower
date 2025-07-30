@@ -5,6 +5,7 @@ using Game.Scripts.DragAndDrop;
 using Game.Scripts.DropZones;
 using Game.Scripts.Events;
 using Game.Scripts.ObjectPool;
+using Game.Scripts.UI;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering.VirtualTexturing;
@@ -67,7 +68,9 @@ namespace Game.Scripts.Cubes
             _isAbleToDrag = false;
             transform.DOMoveY(position.y, duration).SetEase(Ease.InQuint)
                 .OnComplete(() => transform.DOMoveX(position.x, 0.3f)
-                    .OnComplete(() =>_isAbleToDrag = true));
+                    .OnComplete(() => _isAbleToDrag = true));
+            
+            EventBus.RaiseEvent<IMessageActionEvents>(message => message.Show(MessageAction.PlaceCube));
         }
 
         public bool TryGetTargetPoint(out RaycastHit2D targetHit)
@@ -110,6 +113,7 @@ namespace Game.Scripts.Cubes
 
         public void OnDespawn()
         {
+            EventBus.RaiseEvent<IMessageActionEvents>(message => message.Show(MessageAction.DespawnCube));
             gameObject.SetActive(false);
         }
 
@@ -130,7 +134,7 @@ namespace Game.Scripts.Cubes
             var raycastMask = layerMask == default ? cubeLayerMask : layerMask;
             return Physics2D.Raycast(rayPoint, Vector2.down, 40f, raycastMask);
         }
-
+        
         private bool IsDropZone()
         {
             var colliders = Physics2D.OverlapBoxAll(

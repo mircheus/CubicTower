@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bef4f7b1e1ba47dfba9efd5206d59835, type: 3}
+  m_Name: MessagesDictionary
+  m_EditorClassIdentifier: 
+  localizedMessages:
+  - m_TableReference:
+      m_TableCollectionName: GUID:b53917d1ed4cafa438b95a1b8e2200df
+    m_TableEntryReference:
+      m_KeyId: 136397709312
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  - m_TableReference:
+      m_TableCollectionName: GUID:b53917d1ed4cafa438b95a1b8e2200df
+    m_TableEntryReference:
+      m_KeyId: 55486991818752
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  - m_TableReference:
+      m_TableCollectionName: GUID:b53917d1ed4cafa438b95a1b8e2200df
+    m_TableEntryReference:
+      m_KeyId: 55488963141632
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  messageActions: 000000000100000002000000
+  references:
+    version: 2
+    RefIds: []

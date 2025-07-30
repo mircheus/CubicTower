@@ -19,7 +19,15 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 136397709312
-    m_Localized: Drag cube
+    m_Localized: Cube placed!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55486991818752
+    m_Localized: Cube is removed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55488963141632
+    m_Localized: Cube is destroyed
     m_Metadata:
       m_Items: []
   references:
