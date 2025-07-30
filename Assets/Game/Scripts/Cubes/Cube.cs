@@ -62,7 +62,7 @@ namespace Game.Scripts.Cubes
 
         public void MoveDownTo(Vector2 position, float duration)
         {
-            transform.DOMoveY(position.y, duration).SetEase(Ease.Linear);
+            transform.DOMoveY(position.y, duration).SetEase(Ease.InQuint);
         }
 
         public bool TryGetTargetPoint(out Vector2 targetPoint)
