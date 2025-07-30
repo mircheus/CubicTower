@@ -1,13 +1,13 @@
 ﻿using Game.Scripts.Cubes;
 using UnityEngine;
 
-namespace Game.Scripts
+namespace Game.Scripts.DropZones
 {
-    public class DropZone : MonoBehaviour
+    public class TowerDropZone : DropZone
     {
         [SerializeField] private TowerManager towerManager;
 
-        public void GetCubic(Cube cube)
+        public override void GetCubic(Cube cube)
         {
             towerManager.AddCube(cube);
         }

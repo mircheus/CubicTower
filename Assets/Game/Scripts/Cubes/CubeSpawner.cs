@@ -27,7 +27,7 @@ namespace Game.Scripts.Cubes
             var cube = _cubeFactory.GetCube(cubeType);
             cube.transform.position = position;
             cube.Destroyed += CubeOnDestroyed;
-            cube.transform.SetParent(_towerManager.transform);
+            // cube.transform.SetParent(_towerManager.transform);
             cube.OnSpawn();
             return cube;
         }
@@ -35,7 +35,7 @@ namespace Game.Scripts.Cubes
         private void CubeOnDestroyed(Cube cube)
         {
             cube.Destroyed -= CubeOnDestroyed;
-            cube.transform.SetParent(_poolParent);
+            // cube.transform.SetParent(_poolParent);
             cube.OnDespawn();
            _cubeFactory.ReturnCubeToPool(cube);
         }

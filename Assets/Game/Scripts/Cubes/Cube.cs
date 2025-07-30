@@ -1,6 +1,7 @@
 using System;
 using DG.Tweening;
 using Game.Scripts.DragAndDrop;
+using Game.Scripts.DropZones;
 using Game.Scripts.ObjectPool;
 using UnityEditor;
 using UnityEngine;
@@ -8,7 +9,7 @@ using UnityEngine.Rendering.VirtualTexturing;
 
 namespace Game.Scripts.Cubes
 {
-    public class Cube : MonoBehaviour, IDraggable, IPoolable
+    public class Cube : MonoBehaviour, IDraggable, IPoolable, IDestroyable
     {
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private LayerMask cubeLayerMask;
@@ -17,11 +18,13 @@ namespace Game.Scripts.Cubes
         
         private Transform _floor;
         private CubeType _cubeType;
+        private bool _isDragging;
 
         public event Action<Cube> DragStarted;
         public event Action<Cube> Destroyed;
         
         public CubeType CubeType => _cubeType;
+        public bool IsDragging => _isDragging;
 
         public void Initialize(CubeType cubeType)
         {
@@ -31,11 +34,14 @@ namespace Game.Scripts.Cubes
         
         public void StartDrag()
         {
+            _isDragging = true;
             DragStarted?.Invoke(this);
         }
 
         public void EndDrag()
         {
+            _isDragging = false;
+            
             if (IsOverlapCubes())
             {
                 SelfDestroy();
@@ -107,6 +113,11 @@ namespace Game.Scripts.Cubes
         public void SelfDestroy()
         {
             Destroyed?.Invoke(this);
+        }
+
+        public void SetVisibleInsideMask()
+        {
+            spriteRenderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
         }
 
         private RaycastHit2D RaycastDown()

@@ -107,7 +107,7 @@ namespace Game.Scripts
         {
             for (int i = _cubesList.Count - 1; i > index; i--)
             {
-                Destroy(_cubesList[i].gameObject);
+                Destroy(_cubesList[i].gameObject); // TODO: self-destroy
             }
             
             _cubesList.RemoveRange(index + 1, _cubesList.Count - index - 1);
