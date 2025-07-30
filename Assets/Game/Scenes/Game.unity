@@ -768,7 +768,7 @@ GameObject:
   - component: {fileID: 840712019}
   - component: {fileID: 840712018}
   - component: {fileID: 840712020}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Hole
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -950,7 +950,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 6.62, y: 0.23737526}
+  m_Size: {x: 5.170205, y: 0.23737526}
   m_EdgeRadius: 0
 --- !u!50 &840712020
 Rigidbody2D:
@@ -1781,7 +1781,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a4497f4c89f48899d2bc519fbf95699, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hole: {fileID: 840712018}
+  holeLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &1913479468
 GameObject:
   m_ObjectHideFlags: 0
@@ -1988,7 +1990,7 @@ GameObject:
   - component: {fileID: 2105273668}
   - component: {fileID: 2105273667}
   - component: {fileID: 2105273669}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Target
   m_TagString: Untagged
   m_Icon: {fileID: 0}

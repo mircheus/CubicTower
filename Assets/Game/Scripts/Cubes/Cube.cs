@@ -120,10 +120,11 @@ namespace Game.Scripts.Cubes
             spriteRenderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
         }
 
-        private RaycastHit2D RaycastDown()
+        public RaycastHit2D RaycastDown(LayerMask layerMask = default)
         {
             var rayPoint = CalculateRayPoint();
-            return Physics2D.Raycast(rayPoint, Vector2.down, 40f, cubeLayerMask);
+            var raycastMask = layerMask == default ? cubeLayerMask : layerMask;
+            return Physics2D.Raycast(rayPoint, Vector2.down, 40f, raycastMask);
         }
 
         private bool IsDropZone()
