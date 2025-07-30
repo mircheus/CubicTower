@@ -477,10 +477,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: CubeParticleSystem
       objectReference: {fileID: 0}
-    - target: {fileID: 8653967800605328470, guid: a5efbf307030c5246b0dddd70b5ad796, type: 3}
-      propertyPath: destroyFx.Array.size
-      value: 6
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
